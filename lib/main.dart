@@ -12,6 +12,7 @@ void main() {
   );
 }
 
+
 class ExpenseApp extends StatelessWidget {
   const ExpenseApp({Key? key}) : super(key: key);
 
@@ -54,7 +55,6 @@ class ExpenseApp extends StatelessWidget {
       ),
     );
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(snackBar); // SnackBar'ı görüntüler
+    ScaffoldMessenger.of(context).showSnackBar(snackBar); // SnackBar'ı görüntüler
   }
 }
