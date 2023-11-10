@@ -19,7 +19,7 @@ class ExpenseApp extends StatelessWidget {
       appBar: AppBar(
         title: const Text('ExpenseApp'),
       ),
-      body: ExpenseList(),
+      body: ExpenseList(expenses: []),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showSnackBar(context);
