@@ -1,9 +1,7 @@
-// Bu dosya, ana uygulama giriş noktasını içerir ve ExpenseApp widget'ını başlatır.
 import 'package:expenseapp/pages/expense_list.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  // Uygulamayı başlatan main fonksiyonu
   runApp(
     const MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -12,31 +10,26 @@ void main() {
   );
 }
 
-
 class ExpenseApp extends StatelessWidget {
   const ExpenseApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Ana uygulama widget'ı olan ExpenseApp'i oluşturan build fonksiyonu
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ExpenseApp'), // Uygulama başlığı
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              showSnackBar(context);
-            },
-          ),
-        ],
+        title: const Text('ExpenseApp'),
       ),
-      body: ExpenseList(), // Ana içerik olarak ExpenseList widget'ını kullanır
+      body: ExpenseList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showSnackBar(context);
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
   void showSnackBar(BuildContext context) {
-    // SnackBar'ı gösteren fonksiyon
     final snackBar = SnackBar(
       content: Row(
         children: [
@@ -55,6 +48,6 @@ class ExpenseApp extends StatelessWidget {
       ),
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(snackBar); // SnackBar'ı görüntüler
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
