@@ -28,6 +28,21 @@ class _ExpenseListState extends State<ExpenseList> {
         name: "Uzak doğu Turu",
         price: 10000,
         date: DateTime.now(),
+        category: Category.travel),
+    Expense(
+        name: "Izgara",
+        price: 350,
+        date: DateTime.now(),
+        category: Category.food),
+    Expense(
+        name: "Flutter Udemy Kursu",
+        price: 4000,
+        date: DateTime.now(),
+        category: Category.education),
+    Expense(
+        name: "Uzak doğu Turu",
+        price: 10000,
+        date: DateTime.now(),
         category: Category.travel)
   ];
 
@@ -57,6 +72,10 @@ class _ExpenseListState extends State<ExpenseList> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          15.0), // Kenar yuvarlatma özelliği
+                    ),
                     elevation: 3,
                     child: ListTile(
                       title: Text(expenses[index].name), // Harcama adı

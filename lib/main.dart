@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 void main() {
   runApp(
     const MaterialApp(
-      debugShowCheckedModeBanner:
-          false, // Debug banner'ın görüntülenmesini engeller
+      debugShowCheckedModeBanner:false, // Debug banner'ın görüntülenmesini engeller
       home: ExpenseApp(), // Uygulamanın ana bileşeni ExpenseApp
     ),
   );
@@ -48,13 +47,11 @@ class ExpenseApp extends StatelessWidget {
       action: SnackBarAction(
         label: 'Kapat', // SnackBar üzerindeki kapatma butonunun etiketi
         onPressed: () {
-          ScaffoldMessenger.of(context)
-              .hideCurrentSnackBar(); // SnackBar'ı kapatma işlemi
+          ScaffoldMessenger.of(context).hideCurrentSnackBar(); // SnackBar'ı kapatma işlemi
         },
       ),
     );
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(snackBar); // SnackBar'ı görüntüleme
+    ScaffoldMessenger.of(context).showSnackBar(snackBar); // SnackBar'ı görüntüleme
   }
 }
