@@ -1,17 +1,27 @@
+// 'expense.dart' dosyasını import et, bu dosya gider modelini içerir
 import 'package:expenseapp/models/expense.dart';
+
+// 'expense_item.dart' dosyasını import et, bu dosya gider öğesi widget'ını içerir
 import 'package:expenseapp/widgets/expense_item.dart';
+
+// Flutter materyal tasarım kütüphanesini import et
 import 'package:flutter/material.dart';
 
+// ExpenseList sınıfını StatefulWidget sınıfından türet
 class ExpenseList extends StatefulWidget {
+  // Yapıcı metodu, bir parametre olarak 'newExpense' alır
   const ExpenseList(newExpense, {Key? key}) : super(key: key);
 
+  // createState metodu, ExpenseList widget'ının durumunu oluşturur
   @override
   _ExpenseListState createState() => _ExpenseListState();
 }
 
+// _ExpenseListState sınıfını StatefulWidget'ın durumu olan _ExpenseListState sınıfından türet
 class _ExpenseListState extends State<ExpenseList> {
-  // dummy data
+  // Dummy veri oluştur, burada gerçek bir veritabanı kullanılabilir
   final List<Expense> expenses = [
+    // Gider örnekleri
     Expense(
         name: "Yiyecek",
         price: 200,
@@ -32,19 +42,24 @@ class _ExpenseListState extends State<ExpenseList> {
         price: 8000,
         date: DateTime.now(),
         category: Category.expense),
-  ]; // firebase,veritabanı
+  ]; // Gerçek veritabanı kullanılacaksa bu veri yerine dinamik veri alınmalı
 
+  // Build metodu, widget'ın görünümünü oluşturur
   @override
   Widget build(BuildContext context) {
+    // Ekranın ortasına yerleştirilmiş bir sütun oluştur
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // Grafik veya başka bir görselleştirmeyi içerecek bir SizedBox ekleyin
           const SizedBox(
             height: 300,
-            child: Text("Grafik", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            child: Text("Grafik",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           ),
+          // Harcamalar başlığını içerecek bir Padding ekleyin
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text(
@@ -52,10 +67,12 @@ class _ExpenseListState extends State<ExpenseList> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ), // Harcamalar başlığı
           ),
+          // Gider listesini görüntüleyecek bir ListView.builder ekleyin
           Expanded(
             child: ListView.builder(
               itemCount: expenses.length,
               itemBuilder: (context, index) {
+                // Her bir gider öğesini gösterecek ExpenseItem widget'ını ekleyin
                 return ExpenseItem(expenses[index]);
               },
             ),
