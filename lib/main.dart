@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 void main() {
   // Uygulama başlatılırken temel material 3 teması kullanılarak ana sayfa oluşturulur.
   runApp(
-    MaterialApp(theme: ThemeData(useMaterial3: true), home: const MainPage()),
-    
+    MaterialApp(
+      theme: ThemeData(useMaterial3: true),
+      home: const MainPage(),
+      debugShowCheckedModeBanner: false,
+    ),
   );
 }
 
