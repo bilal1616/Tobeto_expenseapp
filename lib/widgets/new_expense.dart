@@ -67,6 +67,7 @@ class _NewExpenseState extends State<NewExpense> {
 
   // Yeni harcamayı kaydeden metod
   void _saveExpense() {
+    // Eğer form geçerli ise devam et
     if (_formKey.currentState?.validate() ?? false) {
       // Expense sınıfını kullanarak yeni bir harcama nesnesi oluşturuyoruz
       Expense newExpense = Expense(
