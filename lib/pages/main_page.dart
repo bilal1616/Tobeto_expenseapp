@@ -1,38 +1,51 @@
-// 'expense_list.dart' dosyasını import et
+import 'package:flutter/material.dart';
+import 'package:expenseapp/models/expense.dart';
 import 'package:expenseapp/pages/expense_list.dart';
-
-// 'new_expense.dart' dosyasını import et
 import 'package:expenseapp/widgets/new_expense.dart';
 
-// Flutter materyal tasarım kütüphanesini import et
-import 'package:flutter/material.dart';
-
-// MainPage sınıfını StatelessWidget sınıfından türet
-class MainPage extends StatelessWidget {
+// Ana sayfa widget'ı, uygulamanın temel görsel bileşenlerini içerir
+class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
   @override
+  _MainPageState createState() => _MainPageState();
+}
+
+// Ana sayfa'nın state nesnesi
+class _MainPageState extends State<MainPage> {
+  // Harcama listesini tutan liste
+  List<Expense> expenses = [];
+
+  // Yeni bir harcama eklemek için kullanılan metod
+  void _addExpense(Expense newExpense) {
+    setState(() {
+      expenses.add(newExpense);
+    });
+  }
+
+  // Widget'ın görüntüsünü oluşturan metod
+  @override
   Widget build(BuildContext context) {
-    // Scaffold widget'ını kullanarak temel sayfa yapılandırması oluştur
     return Scaffold(
-      // AppBar widget'ını kullanarak üst çubuk oluştur
+      // Sayfanın başlık çubuğu
       appBar: AppBar(
-        backgroundColor:
-            Colors.deepPurpleAccent, // Arka plan rengi olarak derin mor kullan
-        title: const Text(
-            "Expense App"), // Başlık olarak "Expense App" metnini kullan
+        backgroundColor: Colors.deepPurpleAccent,
+        title: const Text("Expense App"),
         actions: [
-          // Sağ üst köşede '+' simgesi içeren IconButton ekleyerek yeni gider eklemek için bir alt sayfa aç
+          // Başlık çubuğundaki artı ikonu ile yeni harcama eklemek için IconButton
           IconButton(
             onPressed: () {
+              // Yeni harcama ekranını açmak için alt sayfayı gösteren showModalBottomSheet
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
                 builder: (context) {
-                  // Ekranın yarısını kaplayacak şekilde yeni gider eklemek için alt sayfa oluştur
+                  // Yeni harcama ekranını içeren widget
                   return FractionallySizedBox(
                     heightFactor: 0.60,
-                    child: NewExpense(),
+                    child: NewExpense(
+                      onAddExpense: _addExpense,
+                    ),
                   );
                 },
               );
@@ -41,9 +54,9 @@ class MainPage extends StatelessWidget {
           ),
         ],
       ),
-      // Ana sayfa içeriği olarak ExpenseList widget'ını kullan
-      body: ExpenseList(()), // Burada NewExpense'in bir örneğini geçir
-      // Sayfa arka plan rengini belirle
+      // Sayfanın ana içeriği, ExpenseList widget'ı ile gösterilen harcama listesi
+      body: ExpenseList(expenses),
+      // Sayfanın arkaplan rengi
       backgroundColor: Color.fromARGB(255, 232, 227, 227),
     );
   }

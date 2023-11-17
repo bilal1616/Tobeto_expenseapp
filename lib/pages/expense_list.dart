@@ -9,71 +9,48 @@ import 'package:flutter/material.dart';
 
 // ExpenseList sınıfını StatefulWidget sınıfından türet
 class ExpenseList extends StatefulWidget {
-  // Yapıcı metodu, bir parametre olarak 'newExpense' alır
-  const ExpenseList(newExpense, {Key? key}) : super(key: key);
+  // Harcama listesini alacak bir constructor
+  final List<Expense> expenses;
 
-  // createState metodu, ExpenseList widget'ının durumunu oluşturur
+  const ExpenseList(this.expenses, {Key? key}) : super(key: key);
+
   @override
   _ExpenseListState createState() => _ExpenseListState();
 }
 
-// _ExpenseListState sınıfını StatefulWidget'ın durumu olan _ExpenseListState sınıfından türet
+// ExpenseList'in state nesnesi
 class _ExpenseListState extends State<ExpenseList> {
-  // Dummy veri oluştur, burada gerçek bir veritabanı kullanılabilir
-  final List<Expense> expenses = [
-    // Gider örnekleri
-    Expense(
-        name: "Yiyecek",
-        price: 200,
-        date: DateTime.now(),
-        category: Category.food),
-    Expense(
-        name: "Flutter Udemy Course",
-        price: 2000,
-        date: DateTime.now(),
-        category: Category.education),
-    Expense(
-        name: "Kapadokya Gezisi",
-        price: 20000,
-        date: DateTime.now(),
-        category: Category.travel),
-    Expense(
-        name: "Oyuncu Koltuğu",
-        price: 8000,
-        date: DateTime.now(),
-        category: Category.expense),
-  ]; // Gerçek veritabanı kullanılacaksa bu veri yerine dinamik veri alınmalı
-
-  // Build metodu, widget'ın görünümünü oluşturur
   @override
   Widget build(BuildContext context) {
-    // Ekranın ortasına yerleştirilmiş bir sütun oluştur
     return Center(
+      // Merkezde bulunan bir sütun
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Grafik veya başka bir görselleştirmeyi içerecek bir SizedBox ekleyin
+          // Grafik bölümü
           const SizedBox(
             height: 300,
-            child: Text("Grafik",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            child: Text(
+              "Grafik",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ),
-          // Harcamalar başlığını içerecek bir Padding ekleyin
+          // Harcamalar başlığı
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text(
               "Harcamalar",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ), // Harcamalar başlığı
+            ),
           ),
-          // Gider listesini görüntüleyecek bir ListView.builder ekleyin
+          // Harcama listesini gösteren genişletilebilir ListView
           Expanded(
             child: ListView.builder(
-              itemCount: expenses.length,
+              itemCount: widget.expenses.length,
               itemBuilder: (context, index) {
-                // Her bir gider öğesini gösterecek ExpenseItem widget'ını ekleyin
-                return ExpenseItem(expenses[index]);
+                // Her bir harcama öğesini gösteren ExpenseItem widget'ını kullan ve listeye return et
+                return ExpenseItem(widget.expenses[index]);
               },
             ),
           ),
@@ -82,4 +59,3 @@ class _ExpenseListState extends State<ExpenseList> {
     );
   }
 }
-// Topbar eklemek vs..

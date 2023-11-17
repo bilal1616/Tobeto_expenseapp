@@ -1,128 +1,174 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
+import '../models/expense.dart';
 
+// uuid kütüphanesinden Uuid sınıfını kullanarak rastgele bir ID oluşturuyoruz
+const uuid = Uuid();
+
+// Yeni bir harcama eklemek için kullanılan widget
 class NewExpense extends StatefulWidget {
-  const NewExpense({Key? key}) : super(key: key);
+  // Constructor ile ana sayfa tarafından belirlenen bir fonksiyon alıyoruz
+  const NewExpense({Key? key, required this.onAddExpense}) : super(key: key);
 
+  // Ana sayfa tarafından belirlenen fonksiyonu tutan değişken
+  final Function(Expense) onAddExpense;
+
+  // State nesnesini oluşturan factory method
   @override
   _NewExpenseState createState() => _NewExpenseState();
 }
 
+// Yeni harcama ekranının state nesnesi
 class _NewExpenseState extends State<NewExpense> {
-  // Text alanları için controller oluşturuluyor
+  // Form kontrolü için anahtar
+  final _formKey = GlobalKey<FormState>();
+
+  // Harcama adını tutan controller
   final _nameController = TextEditingController();
+
+  // Harcama miktarını tutan controller
   final _amountController = TextEditingController();
 
-  // Seçili tarih, başlangıçta günümüz tarihiyle ayarlanıyor
+  // Harcama tarihini tutan değişken
   DateTime _date = DateTime.now();
 
-  // Tarih değiştiğinde çağrılan fonksiyon
-  void changeDateText(DateTime date) {
+  // Harcama kategorisini tutan değişken
+  String _category = "Kategori Seçin";
+
+  // Tarih değiştiğinde bu metod kullanılarak güncellenir
+  void _changeDateText(DateTime date) {
     setState(() {
       _date = date;
     });
   }
 
-  // Kaydedilen tarihi tutmak için bir değişken tanımlanıyor
-  String _savedDate = "";
+  // Tarih formatını düzenleyen metod
+  String _formattedDate() {
+    var formatter = DateFormat.yMd();
+    return formatter.format(_date);
+  }
 
-  // **Kategori seçmek için bir değişken tanımlanıyor**
-  String _category = "Kategori Seçin";
+  // Dropdown'dan seçilen kategori string'ini Expense sınıfındaki Category enum'ına çeviren metod
+  Category _categoryFromString(String categoryName) {
+    switch (categoryName) {
+      case "food":
+        return Category.food;
+      case "education":
+        return Category.education;
+      case "travel":
+        return Category.travel;
+      case "expense":
+        return Category.expense;
+      default:
+        return Category.food; // Varsayılan olarak food'u kullanabilirsiniz
+    }
+  }
 
+  // Yeni harcamayı kaydeden metod
+  void _saveExpense() {
+    if (_formKey.currentState?.validate() ?? false) {
+      // Expense sınıfını kullanarak yeni bir harcama nesnesi oluşturuyoruz
+      Expense newExpense = Expense(
+        name: _nameController.text,
+        price: double.parse(_amountController.text),
+        date: _date,
+        category: _categoryFromString(_category),
+      );
+
+      // Ana sayfadaki onAddExpense fonksiyonunu çağırarak harcamayı ekliyoruz
+      widget.onAddExpense(newExpense);
+
+      // Controller'ları temizleyerek formu sıfırlıyoruz
+      _nameController.clear();
+      _amountController.clear();
+      _category = "Kategori Seçin";
+
+      // Yeni harcama ekranını kapatıyoruz
+      Navigator.of(context).pop();
+    }
+  }
+
+  // Widget'ın görüntüsünü oluşturan metod
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          // Harcamanın adını girmek için metin alanı
-          TextField(
-            controller: _nameController,
-            maxLength: 50,
-            decoration: const InputDecoration(label: Text("Harcama Adı")),
-          ),
-          // Harcama miktarını girmek için metin alanı
-          TextField(
-            controller: _amountController,
-            keyboardType: TextInputType.number,
-            decoration:
-                const InputDecoration(label: Text("Miktar"), prefixText: "₺"),
-          ),
-          // Tarih seçmek için ikon düğmesi
-          IconButton(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            // Harcama adını girmek için metin alanı
+            TextFormField(
+              controller: _nameController,
+              maxLength: 50,
+              decoration: const InputDecoration(label: Text("Harcama Adı")),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Lütfen bir harcama adı girin';
+                }
+                return null;
+              },
+            ),
+            // Harcama miktarını girmek için metin alanı
+            TextFormField(
+              controller: _amountController,
+              keyboardType: TextInputType.number,
+              decoration:
+                  const InputDecoration(label: Text("Miktar"), prefixText: "₺"),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Lütfen bir miktar girin';
+                }
+                return null;
+              },
+            ),
+            // Tarih seçmek için kullanılan IconButton
+            IconButton(
               onPressed: () async {
-                // Kullanıcıya tarih seçimini gösteren pencereyi aç
                 var date = await showDatePicker(
                   context: context,
                   initialDate: _date,
                   firstDate: DateTime(1900, 1, 1),
                   lastDate: DateTime(2050, 12, 31),
                 );
-                // Eğer kullanıcı bir tarih seçerse, tarihi güncelle
                 if (date != null) {
-                  changeDateText(date);
+                  _changeDateText(date);
                 }
               },
-              icon: const Icon(Icons.calendar_month)),
-          // Seçilen tarihi gösteren metin
-          Text(DateFormat.yMd().format(_date)),
-          // **Kategori seçmek için açılır liste**
-          DropdownButton<String>(
-            value: _category,
-            hint: const Text("Kategori Seçin"),
-            onChanged: (String? newValue) {
-              setState(() {
-                _category = newValue!;
-              });
-            },
-            items: <String>[
-              "Kategori Seçin", // Bu değer başlangıç değeri olarak kullanılıyor.
-              "food",
-              "education",
-              "travel",
-              "expense"
-            ].map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          ),
-          // Kaydet butonu
-          ElevatedButton(
-              onPressed: () {
-                // Kaydedilen harcamayı konsola yazdır
-                print("Kayıt Başarılı: ${_nameController.text}");
-                // Kaydedilen tarihi değişkene ata ve ekranda göster
-                setState(() {
-                  _savedDate = DateFormat.yMd().format(_date);
-                });
-                // **Kaydedilen kategoriyi konsola yazdır**
-                print("Seçilen kategori: $_category");
-              },
-              child: const Text("Kaydet")),
-          // Kaydedilen tarihi gösteren metin
-          // Kaydedilen tarihi bir Card widget'ına yerleştir
-          Card(
-            color: Color.fromARGB(255, 247, 247, 247),
-            child: ListTile(
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Harcama Adı: ${_nameController.text}",
-                      style: TextStyle(color: Colors.black)),
-                  Text("Miktar: ${_amountController.text} \₺",
-                      style: TextStyle(color: Colors.black)),
-                  Text("Seçilen tarih: $_savedDate",
-                      style: TextStyle(color: Colors.black)),
-                  // **Seçilen kategoriyi gösteren metin**
-                  Text('Seçilen kategori: $_category',
-                      style: TextStyle(color: Colors.black)),
-                ],
-              ),
+              icon: const Icon(Icons.calendar_month),
             ),
-          ),
-        ],
+            // Seçilen tarihi gösteren metin
+            Text(_formattedDate()),
+            // Harcama kategorisini seçmek için kullanılan DropdownButton
+            DropdownButton<String>(
+              value: _category,
+              hint: const Text("Kategori Seçin"),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _category = newValue!;
+                });
+              },
+              items: <String>[
+                "Kategori Seçin",
+                "food",
+                "education",
+                "travel",
+                "expense"
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            // Harcamayı kaydetmek için kullanılan buton
+            ElevatedButton(
+              onPressed: _saveExpense,
+              child: const Text("Kaydet"),
+            ),
+          ],
+        ),
       ),
     );
   }

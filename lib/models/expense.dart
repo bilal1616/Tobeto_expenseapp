@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
+// uuid kütüphanesinden Uuid sınıfını kullanarak rastgele bir ID oluşturuyoruz
 const uuid = Uuid();
 
 // Harcama kategorilerini temsil eden enum
@@ -18,18 +19,19 @@ const categoryIcons = {
 // Harcama sınıfı, her bir harcama öğesini temsil eder
 class Expense {
   // Yapıcı metot ile harcama öğesinin özellikleri belirlenir
-  Expense({
-    required this.name,   // Harcama adı
-    required this.price,  // Harcama tutarı
-    required this.date,   // Harcama tarihi
-    required this.category // Harcama kategorisi
-  }) : id = uuid.v4();    // UUID ile benzersiz bir kimlik oluşturulur
+  Expense(
+      {required this.name, // Harcama adı
+      required this.price, // Harcama tutarı
+      required this.date, // Harcama tarihi
+      required this.category // Harcama kategorisi
+      })
+      : id = uuid.v4(); // UUID ile benzersiz bir kimlik oluşturulur
 
   // Harcama öğesinin özellikleri
-  final String id;        // Harcama kimlik numarası
-  final String name;      // Harcama adı
-  final double price;     // Harcama tutarı
-  final DateTime date;    // Harcama tarihi
+  final String id; // Harcama kimlik numarası
+  final String name; // Harcama adı
+  final double price; // Harcama tutarı
+  final DateTime date; // Harcama tarihi
   final Category category; // Harcama kategorisi
 
   // Tarih formatını belirli bir formata dönüştüren metot
@@ -38,7 +40,6 @@ class Expense {
     return formatter.format(date);
   }
 }
-
 
 // Getter method => Bir değişken gibi davranır
 // Setter method => Bir değişkenin değerini değiştiren method

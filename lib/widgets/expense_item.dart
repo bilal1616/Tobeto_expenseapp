@@ -35,8 +35,7 @@ class ExpenseItem extends StatelessWidget {
                 // Diğer widget'lar arasında boşluk bırakmak için Spacer widget'ını ekleyin
                 const Spacer(),
                 // Harcama kategorisinin ikonunu içerecek bir Icon widget'ı ekleyin
-                Icon(categoryIcons[
-                    expense.category]), // Harcama kategorisinin ikonu
+                Icon(categoryIcons[expense.category]), // Harcama kategorisinin ikonu
                 // İkon ile tarih arasında boşluk bırakmak için SizedBox widget'ını ekleyin
                 const SizedBox(width: 8),
                 // Harcama tarihini içerecek bir Text widget'ı ekleyin
