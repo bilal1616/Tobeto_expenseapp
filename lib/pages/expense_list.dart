@@ -2,8 +2,11 @@ import 'package:expenseapp/models/expense.dart';
 import 'package:expenseapp/widgets/expense_item.dart';
 import 'package:flutter/material.dart';
 
+// Gider listesini gösteren Stateful Widget
 class ExpenseList extends StatefulWidget {
   const ExpenseList(this.expenses, this.onRemove, {Key? key}) : super(key: key);
+
+  // Gider listesi ve gideri kaldırma fonksiyonu
   final List<Expense> expenses;
   final void Function(Expense expense) onRemove;
 
@@ -11,6 +14,7 @@ class ExpenseList extends StatefulWidget {
   _ExpenseListState createState() => _ExpenseListState();
 }
 
+// Gider listesi State'i
 class _ExpenseListState extends State<ExpenseList> {
   @override
   Widget build(BuildContext context) {
@@ -19,6 +23,7 @@ class _ExpenseListState extends State<ExpenseList> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // Grafik veya diğer görsel öğeler için ayrılan boşluk
           SizedBox(
             height: 250,
             child: Text(
@@ -26,10 +31,14 @@ class _ExpenseListState extends State<ExpenseList> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
+
+          // "Harcamalar" metni
           Text(
             "Harcamalar",
             style: Theme.of(context).textTheme.titleLarge,
           ),
+
+          // Gider listesini gösteren ListView
           Expanded(
             child: ListView.builder(
               itemCount: widget.expenses.length,
@@ -37,12 +46,13 @@ class _ExpenseListState extends State<ExpenseList> {
                 return Dismissible(
                   key: ValueKey(widget.expenses[index]),
                   child: ExpenseItem(widget.expenses[index]),
+                  // Giderin kaydırma yönlendirmesi
                   onDismissed: (direction) {
                     if (direction == DismissDirection.startToEnd) {
-                      // soldan sağa ise
+                      // Soldan sağa kaydırma durumunda gideri kaldır
                       widget.onRemove(widget.expenses[index]);
                     } else if (direction == DismissDirection.endToStart) {
-                      // sağdan sola ise
+                      // Sağdan sola kaydırma durumunda gideri kaldır
                       widget.onRemove(widget.expenses[index]);
                     }
                   },

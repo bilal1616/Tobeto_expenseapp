@@ -3,6 +3,7 @@ import 'package:expenseapp/widgets/new_expense.dart';
 import 'package:flutter/material.dart';
 import 'package:expenseapp/models/expense.dart';
 
+// Ana Sayfa Widget'ı
 class MainPage extends StatefulWidget {
   MainPage({Key? key}) : super(key: key);
 
@@ -10,8 +11,12 @@ class MainPage extends StatefulWidget {
   State<StatefulWidget> createState() => _MainPageState();
 }
 
+// Ana Sayfa'nın State'i
 class _MainPageState extends State<MainPage> {
+  // Dark Mode durumunu tutan değişken
   bool _isDarkModeEnabled = false;
+
+  // Gider listesi
   final List<Expense> expenses = [
     Expense(
       name: "Yiyecek",
@@ -27,24 +32,27 @@ class _MainPageState extends State<MainPage> {
     ),
   ];
 
+  // Yeni gider ekleyen metod
   void addExpense(Expense expense) {
     setState(() {
       expenses.add(expense);
     });
   }
 
+  // Gideri kaldıran metod
   void removeExpense(Expense expense) {
     final removedExpenseIndex = expenses.indexOf(expense);
 
+    // Kullanıcıya giderin silindiği bir SnackBar göster
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text(
-          "Expense Deleted",
+          "Gider Silindi",
           style: TextStyle(color: Colors.green, fontSize: 16),
         ),
         action: SnackBarAction(
           textColor: Colors.red,
-          label: "Undo",
+          label: "Geri Al",
           onPressed: () {
             setState(() {
               expenses.insert(removedExpenseIndex, expense);
@@ -62,12 +70,15 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Theme(
+      // Dark Mode durumuna göre tema seçimi
       data: _isDarkModeEnabled ? ThemeData.dark() : ThemeData.light(),
       child: Scaffold(
         appBar: AppBar(
+          // Başlık ve Dark Mode anahtarı içeren app bar
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              // Dark Mode anahtarını kontrol eden Switch
               Switch(
                 value: _isDarkModeEnabled,
                 onChanged: (value) {
@@ -79,9 +90,10 @@ class _MainPageState extends State<MainPage> {
                 activeColor: Theme.of(context).colorScheme.onPrimary,
               ),
               const SizedBox(width: 64),
-              const Center(child: Text("Expense App")),
+              const Center(child: Text("Gider Uygulaması")),
             ],
           ),
+          // Sağ üst köşede Yeni Gider Ekle butonu
           actions: [
             IconButton(
               onPressed: () {
@@ -96,6 +108,7 @@ class _MainPageState extends State<MainPage> {
             ),
           ],
         ),
+        // Ana ekranın gövdesi, ExpenseList widget'ı ile gösterilen gider listesi
         body: ExpenseList(expenses, removeExpense),
       ),
     );

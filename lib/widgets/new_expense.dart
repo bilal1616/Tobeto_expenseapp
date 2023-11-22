@@ -2,26 +2,28 @@ import 'package:expenseapp/models/expense.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+// Yeni gider ekranı için Stateful Widget
 class NewExpense extends StatefulWidget {
   const NewExpense({Key? key, required this.onAdd}) : super(key: key);
 
+  // Ana ekrana eklenen yeni gideri bildiren callback fonksiyonu
   final void Function(Expense expense) onAdd;
 
   @override
   _NewExpenseState createState() => _NewExpenseState();
 }
 
-//11:10
 class _NewExpenseState extends State<NewExpense> {
-  // Controller
+  // Text alanları için controller'lar
   final _nameController = TextEditingController();
   final _amountController = TextEditingController();
+
+  // Seçilen tarih ve kategori
   DateTime? _selectedDate;
   Category _selectedCategory = Category.work;
 
+  // Tarih seçiciyi açan metod
   void _openDatePicker() async {
-    // sync => bir işlem bitmeden diğerinin başlamadığı yapılar
-    // async => alt satıra geçmek için işlemin bitmesini beklemezler // await
     DateTime now = DateTime.now();
     DateTime startDate = DateTime(1970, 1, 1);
     DateTime endDate = DateTime(2099, 12, 31);
@@ -30,7 +32,7 @@ class _NewExpenseState extends State<NewExpense> {
       context: context,
       initialDate: _selectedDate == null
           ? now
-          : _selectedDate!, // eğer seçili tarih varsa onu kullan, yoksa günün tarihini kullan..
+          : _selectedDate!, // Eğer seçili tarih varsa onu kullan, yoksa günün tarihini kullan.
       firstDate: startDate,
       lastDate: endDate,
     );
@@ -40,30 +42,33 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
+  // Yeni gider eklemeyi gerçekleştiren metod
   void _addNewExpense() {
     final amount = double.tryParse(_amountController.text);
-    // parse, tryParse => parse değer nullsa hata fırlatır, tryParse değeri null olarak alır
+
+    // Geçerli bir miktar, isim ve tarih kontrolü
     if (amount == null ||
         amount < 0 ||
         _nameController.text.isEmpty ||
         _selectedDate == null) {
-      /// hatalı durum
+      // Hata durumunda uyarı göster
       showDialog(
           context: context,
           builder: (ctx) {
             return AlertDialog(
-              title: const Text("Validation Error"),
-              content: const Text("Please fill all blank areas."),
+              title: const Text("Doğrulama Hatası"),
+              content: const Text("Lütfen tüm boş alanları doldurun."),
               actions: [
                 TextButton(
                     onPressed: () {
                       Navigator.pop(ctx);
                     },
-                    child: const Text("Okay"))
+                    child: const Text("Tamam"))
               ],
             );
           });
     } else {
+      // Geçerli durumda yeni gider oluştur ve ana ekrana bildir
       Expense expense = Expense(
           name: _nameController.text,
           price: amount,
@@ -80,11 +85,14 @@ class _NewExpenseState extends State<NewExpense> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
+          // Gider adı giriş alanı
           TextField(
             controller: _nameController,
             maxLength: 50,
-            decoration: const InputDecoration(label: Text("Expense Name")),
+            decoration: const InputDecoration(label: Text("Gider Adı")),
           ),
+
+          // Gider miktarı ve tarih giriş alanları
           Row(
             children: [
               Expanded(
@@ -92,7 +100,7 @@ class _NewExpenseState extends State<NewExpense> {
                   controller: _amountController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                      label: Text("Amount"), prefixText: "₺"),
+                      label: Text("Miktar"), prefixText: "₺"),
                 ),
               ),
               const SizedBox(
@@ -112,7 +120,9 @@ class _NewExpenseState extends State<NewExpense> {
                 ),
               ),
             ],
-          ), // seçilen tarihi formatlayarak yazdırmak..
+          ),
+
+          // Kategori seçici dropdown
           const SizedBox(
             height: 40,
           ),
@@ -131,7 +141,11 @@ class _NewExpenseState extends State<NewExpense> {
                   })
             ],
           ),
+
+          // Boşluk bırakma
           const Spacer(),
+
+          // Vazgeç ve Kaydet butonları
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
