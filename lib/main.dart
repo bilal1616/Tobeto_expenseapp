@@ -1,21 +1,40 @@
-// 'expenseapp/pages/main_page.dart' dosyasından 'MainPage' sınıfını içeriye dahil ediyoruz.
-import 'package:expenseapp/pages/main_page.dart';
-// Flutter SDK'dan 'material.dart' kütüphanesini dahil ediyoruz.
 import 'package:flutter/material.dart';
-// Programın başlangıcında çalıştırılacak kodlar buraya yazılır
+import 'package:expenseapp/pages/main_page.dart';
 
 void main() {
-  // Uygulama başlatılırken temel material 3 teması kullanılarak ana sayfa oluşturulur.
-  runApp(
-    MaterialApp(
-      // Uygulamanın genel tema ayarlarını içerir.
-      theme: ThemeData(useMaterial3: true),
-      // Uygulamanın başlangıç noktasını belirten ana sayfa. Bu durumda 'MainPage'.
-      home: const MainPage(),
-      // Hata ayıklama modunda ekranın sağ üst köşesindeki "Debug" yazısını kapatır.
-      debugShowCheckedModeBanner: false,
-    ),
-  );
+  runApp(MyApp());
 }
 
-// Modelleme => Uygulamada çalışacak yapıların nesne haline getirilmesi
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.light(
+          primary: Colors.blue,
+          onPrimary: Colors.red,
+          primaryContainer: Colors.grey[400]!,
+          onPrimaryContainer: Colors.black,
+        ),
+        appBarTheme: const AppBarTheme().copyWith(
+          backgroundColor: Color.fromARGB(255, 22, 3, 66),
+          foregroundColor: Colors.yellow,
+        ),
+        cardTheme: const CardTheme().copyWith(
+          color: Colors.white,
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        ),
+        textTheme: ThemeData().textTheme.copyWith(
+              titleLarge: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+                fontSize: 18,
+              ),
+            ),
+      ),
+      home: MainPage(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}

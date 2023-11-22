@@ -1,175 +1,156 @@
+import 'package:expenseapp/models/expense.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
-import '../models/expense.dart';
 
-// uuid kütüphanesinden Uuid sınıfını kullanarak rastgele bir ID oluşturuyoruz
-const uuid = Uuid();
-
-// Yeni bir harcama eklemek için kullanılan widget
 class NewExpense extends StatefulWidget {
-  // Constructor ile ana sayfa tarafından belirlenen bir fonksiyon alıyoruz
-  const NewExpense({Key? key, required this.onAddExpense}) : super(key: key);
+  const NewExpense({Key? key, required this.onAdd}) : super(key: key);
 
-  // Ana sayfa tarafından belirlenen fonksiyonu tutan değişken
-  final Function(Expense) onAddExpense;
+  final void Function(Expense expense) onAdd;
 
-  // State nesnesini oluşturan factory method
   @override
   _NewExpenseState createState() => _NewExpenseState();
 }
 
-// Yeni harcama ekranının state nesnesi
+//11:10
 class _NewExpenseState extends State<NewExpense> {
-  // Form kontrolü için anahtar
-  final _formKey = GlobalKey<FormState>();
-
-  // Harcama adını tutan controller
+  // Controller
   final _nameController = TextEditingController();
-
-  // Harcama miktarını tutan controller
   final _amountController = TextEditingController();
+  DateTime? _selectedDate;
+  Category _selectedCategory = Category.work;
 
-  // Harcama tarihini tutan değişken
-  DateTime _date = DateTime.now();
+  void _openDatePicker() async {
+    // sync => bir işlem bitmeden diğerinin başlamadığı yapılar
+    // async => alt satıra geçmek için işlemin bitmesini beklemezler // await
+    DateTime now = DateTime.now();
+    DateTime startDate = DateTime(1970, 1, 1);
+    DateTime endDate = DateTime(2099, 12, 31);
 
-  // Harcama kategorisini tutan değişken
-  String _category = "Kategori Seçin";
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate == null
+          ? now
+          : _selectedDate!, // eğer seçili tarih varsa onu kullan, yoksa günün tarihini kullan..
+      firstDate: startDate,
+      lastDate: endDate,
+    );
 
-  // Tarih değiştiğinde bu metod kullanılarak güncellenir
-  void _changeDateText(DateTime date) {
     setState(() {
-      _date = date;
+      _selectedDate = selectedDate;
     });
   }
 
-  // Tarih formatını düzenleyen metod
-  String _formattedDate() {
-    var formatter = DateFormat.yMd();
-    return formatter.format(_date);
-  }
-
-  // Dropdown'dan seçilen kategori string'ini Expense sınıfındaki Category enum'ına çeviren metod
-  Category _categoryFromString(String categoryName) {
-    switch (categoryName) {
-      case "food":
-        return Category.food;
-      case "education":
-        return Category.education;
-      case "travel":
-        return Category.travel;
-      case "expense":
-        return Category.expense;
-      default:
-        return Category.food; // Varsayılan olarak food'u kullanabilirsiniz
+  void _addNewExpense() {
+    final amount = double.tryParse(_amountController.text);
+    // parse, tryParse => parse değer nullsa hata fırlatır, tryParse değeri null olarak alır
+    if (amount == null ||
+        amount < 0 ||
+        _nameController.text.isEmpty ||
+        _selectedDate == null) {
+      /// hatalı durum
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: const Text("Validation Error"),
+              content: const Text("Please fill all blank areas."),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                    },
+                    child: const Text("Okay"))
+              ],
+            );
+          });
+    } else {
+      Expense expense = Expense(
+          name: _nameController.text,
+          price: amount,
+          date: _selectedDate!,
+          category: _selectedCategory);
+      widget.onAdd(expense);
+      Navigator.pop(context);
     }
   }
 
-  // Yeni harcamayı kaydeden metod
-  void _saveExpense() {
-    // Eğer form geçerli ise devam et
-    if (_formKey.currentState?.validate() ?? false) {
-      // Expense sınıfını kullanarak yeni bir harcama nesnesi oluşturuyoruz
-      Expense newExpense = Expense(
-        name: _nameController.text,
-        price: double.parse(_amountController.text),
-        date: _date,
-        category: _categoryFromString(_category),
-      );
-
-      // Ana sayfadaki onAddExpense fonksiyonunu çağırarak harcamayı ekliyoruz
-      widget.onAddExpense(newExpense);
-
-      // Controller'ları temizleyerek formu sıfırlıyoruz
-      _nameController.clear();
-      _amountController.clear();
-      _category = "Kategori Seçin";
-
-      // Yeni harcama ekranını kapatıyoruz
-      Navigator.of(context).pop();
-    }
-  }
-
-  // Widget'ın görüntüsünü oluşturan metod
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            // Harcama adını girmek için metin alanı
-            TextFormField(
-              controller: _nameController,
-              maxLength: 50,
-              decoration: const InputDecoration(label: Text("Harcama Adı")),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Lütfen bir harcama adı girin';
-                }
-                return null;
-              },
-            ),
-            // Harcama miktarını girmek için metin alanı
-            TextFormField(
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              decoration:
-                  const InputDecoration(label: Text("Miktar"), prefixText: "₺"),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Lütfen bir miktar girin';
-                }
-                return null;
-              },
-            ),
-            // Tarih seçmek için kullanılan IconButton
-            IconButton(
-              onPressed: () async {
-                var date = await showDatePicker(
-                  context: context,
-                  initialDate: _date,
-                  firstDate: DateTime(1900, 1, 1),
-                  lastDate: DateTime(2050, 12, 31),
-                );
-                if (date != null) {
-                  _changeDateText(date);
-                }
-              },
-              icon: const Icon(Icons.calendar_month),
-            ),
-            // Seçilen tarihi gösteren metin
-            Text(_formattedDate()),
-            // Harcama kategorisini seçmek için kullanılan DropdownButton
-            DropdownButton<String>(
-              value: _category,
-              hint: const Text("Kategori Seçin"),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _category = newValue!;
-                });
-              },
-              items: <String>[
-                "Kategori Seçin",
-                "food",
-                "education",
-                "travel",
-                "expense"
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            // Harcamayı kaydetmek için kullanılan buton
-            ElevatedButton(
-              onPressed: _saveExpense,
-              child: const Text("Kaydet"),
-            ),
-          ],
-        ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          TextField(
+            controller: _nameController,
+            maxLength: 50,
+            decoration: const InputDecoration(label: Text("Expense Name")),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                      label: Text("Amount"), prefixText: "₺"),
+                ),
+              ),
+              const SizedBox(
+                width: 30,
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    IconButton(
+                        onPressed: () => _openDatePicker(),
+                        icon: const Icon(Icons.calendar_month)),
+                    // Ternary Operator
+                    Text(_selectedDate == null
+                        ? "Tarih Seçiniz"
+                        : DateFormat.yMd().format(_selectedDate!)),
+                  ],
+                ),
+              ),
+            ],
+          ), // seçilen tarihi formatlayarak yazdırmak..
+          const SizedBox(
+            height: 40,
+          ),
+          Row(
+            children: [
+              DropdownButton(
+                  value: _selectedCategory,
+                  items: Category.values.map((category) {
+                    return DropdownMenuItem(
+                        value: category, child: Text(category.name.toString()));
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      if (value != null) _selectedCategory = value;
+                    });
+                  })
+            ],
+          ),
+          const Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Vazgeç")),
+              const SizedBox(
+                width: 30,
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    _addNewExpense();
+                  },
+                  child: const Text("Kaydet")),
+            ],
+          )
+        ],
       ),
     );
   }

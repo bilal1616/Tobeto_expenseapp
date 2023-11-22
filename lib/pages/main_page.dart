@@ -1,63 +1,99 @@
-import 'package:flutter/material.dart';
-import 'package:expenseapp/models/expense.dart';
 import 'package:expenseapp/pages/expense_list.dart';
 import 'package:expenseapp/widgets/new_expense.dart';
+import 'package:flutter/material.dart';
+import 'package:expenseapp/models/expense.dart';
 
-// Ana sayfa widget'ı, uygulamanın temel görsel bileşenlerini içerir
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  MainPage({Key? key}) : super(key: key);
 
   @override
-  _MainPageState createState() => _MainPageState();
+  State<StatefulWidget> createState() => _MainPageState();
 }
 
-// Ana sayfa'nın state nesnesi
 class _MainPageState extends State<MainPage> {
-  // Harcama listesini tutan liste
-  List<Expense> expenses = [];
+  bool _isDarkModeEnabled = false;
+  final List<Expense> expenses = [
+    Expense(
+      name: "Yiyecek",
+      price: 250,
+      date: DateTime.now(),
+      category: Category.food,
+    ),
+    Expense(
+      name: "Flutter Udemy Kursu",
+      price: 1500,
+      date: DateTime.now(),
+      category: Category.education,
+    ),
+  ];
 
-  // Yeni bir harcama eklemek için kullanılan metod
-  void _addExpense(Expense newExpense) {
+  void addExpense(Expense expense) {
     setState(() {
-      expenses.add(newExpense);
+      expenses.add(expense);
     });
   }
 
-  // Widget'ın görüntüsünü oluşturan metod
+  void removeExpense(Expense expense) {
+    final removedExpenseIndex = expenses.indexOf(expense);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text("Expense Deleted"),
+        action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            setState(() {
+              expenses.insert(removedExpenseIndex, expense);
+            });
+          },
+        ),
+      ),
+    );
+
+    setState(() {
+      expenses.remove(expense);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // Sayfanın başlık çubuğu
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurpleAccent,
-        title: const Text("Expense App"),
-        actions: [
-          // Başlık çubuğundaki artı ikonu ile yeni harcama eklemek için IconButton
-          IconButton(
-            onPressed: () {
-              // Yeni harcama ekranını açmak için alt sayfayı gösteren showModalBottomSheet
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (context) {
-                  // Yeni harcama ekranını içeren widget
-                  return FractionallySizedBox(
-                    heightFactor: 0.60,
-                    child: NewExpense(
-                      onAddExpense: _addExpense,
-                    ),
-                  );
+    return Theme(
+      data: _isDarkModeEnabled ? ThemeData.dark() : ThemeData.light(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Switch(
+                value: _isDarkModeEnabled,
+                onChanged: (value) {
+                  setState(() {
+                    _isDarkModeEnabled = value;
+                  });
                 },
-              );
-            },
-            icon: const Icon(Icons.add),
+                activeTrackColor: Theme.of(context).colorScheme.primary,
+                activeColor: Theme.of(context).colorScheme.onPrimary,
+              ),
+              const SizedBox(width: 64),
+              const Center(child: Text("Expense App")),
+            ],
           ),
-        ],
+          actions: [
+            IconButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (ctx) => NewExpense(
+                    onAdd: (expense) => addExpense(expense),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.add),
+            ),
+          ],
+        ),
+        body: ExpenseList(expenses, removeExpense),
       ),
-      // Sayfanın ana içeriği, ExpenseList widget'ı ile gösterilen harcama listesi
-      body: ExpenseList(expenses),
-      // Sayfanın arkaplan rengi
-      backgroundColor: Color.fromARGB(255, 232, 227, 227),
     );
   }
 }
