@@ -30,6 +30,11 @@ class _MainPageState extends State<MainPage> {
       date: DateTime.now(),
       category: Category.education,
     ),
+    Expense(
+        name: "Uzakdoğu Turu",
+        price: 50000,
+        date: DateTime.now(),
+        category: Category.travel)
   ];
 
   // Yeni gider ekleyen metod
@@ -47,12 +52,12 @@ class _MainPageState extends State<MainPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text(
-          "Gider Silindi",
+          "Expense Deleted!",
           style: TextStyle(color: Colors.green, fontSize: 16),
         ),
         action: SnackBarAction(
           textColor: Colors.red,
-          label: "Geri Al",
+          label: "Undo",
           onPressed: () {
             setState(() {
               expenses.insert(removedExpenseIndex, expense);
@@ -89,8 +94,8 @@ class _MainPageState extends State<MainPage> {
                 activeTrackColor: Theme.of(context).colorScheme.primary,
                 activeColor: Theme.of(context).colorScheme.onPrimary,
               ),
-              const SizedBox(width: 64),
-              const Center(child: Text("Gider Uygulaması")),
+              const SizedBox(width: 55),
+              const Center(child: Text("Expense App")),
             ],
           ),
           // Sağ üst köşede Yeni Gider Ekle butonu

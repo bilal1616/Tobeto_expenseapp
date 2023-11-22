@@ -56,14 +56,14 @@ class _NewExpenseState extends State<NewExpense> {
           context: context,
           builder: (ctx) {
             return AlertDialog(
-              title: const Text("Doğrulama Hatası"),
-              content: const Text("Lütfen tüm boş alanları doldurun."),
+              title: const Text("Validation Error"),
+              content: const Text("Please fill in all blank fields."),
               actions: [
                 TextButton(
                     onPressed: () {
                       Navigator.pop(ctx);
                     },
-                    child: const Text("Tamam"))
+                    child: const Text("Ok"))
               ],
             );
           });
@@ -89,7 +89,7 @@ class _NewExpenseState extends State<NewExpense> {
           TextField(
             controller: _nameController,
             maxLength: 50,
-            decoration: const InputDecoration(label: Text("Gider Adı")),
+            decoration: const InputDecoration(label: Text("Expense Name")),
           ),
 
           // Gider miktarı ve tarih giriş alanları
@@ -100,7 +100,7 @@ class _NewExpenseState extends State<NewExpense> {
                   controller: _amountController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                      label: Text("Miktar"), prefixText: "₺"),
+                      label: Text("Amount"), prefixText: "₺"),
                 ),
               ),
               const SizedBox(
