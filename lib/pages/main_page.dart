@@ -38,8 +38,12 @@ class _MainPageState extends State<MainPage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text("Expense Deleted"),
+        content: const Text(
+          "Expense Deleted",
+          style: TextStyle(color: Colors.green, fontSize: 16),
+        ),
         action: SnackBarAction(
+          textColor: Colors.red,
           label: "Undo",
           onPressed: () {
             setState(() {
