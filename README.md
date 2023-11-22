@@ -15,6 +15,6 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-<img src="assets/11.png" width="450">
-<img src="assets/12.png" width="450">
-<img src="assets/13.png" width="450">
+<img src="assets/11.png" height="400">
+<img src="assets/12.png" height="400">
+<img src="assets/13.png" height="400">
