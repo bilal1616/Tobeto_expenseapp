@@ -1,4 +1,5 @@
 import 'package:expenseapp/models/expense.dart';
+import 'package:expenseapp/widgets/chart/chart.dart';
 import 'package:expenseapp/widgets/expense_item.dart';
 import 'package:flutter/material.dart';
 
@@ -26,9 +27,8 @@ class _ExpenseListState extends State<ExpenseList> {
           // Grafik veya diğer görsel öğeler için ayrılan boşluk
           SizedBox(
             height: 250,
-            child: Text(
-              "Grafik",
-              style: Theme.of(context).textTheme.titleLarge,
+            child: Chart(
+              expenses: widget.expenses,
             ),
           ),
 

@@ -26,15 +26,10 @@ class _MainPageState extends State<MainPage> {
     ),
     Expense(
       name: "Flutter Udemy Kursu",
-      price: 1500,
+      price: 1000,
       date: DateTime.now(),
       category: Category.education,
     ),
-    Expense(
-        name: "Uzakdoğu Turu",
-        price: 50000,
-        date: DateTime.now(),
-        category: Category.travel)
   ];
 
   // Yeni gider ekleyen metod

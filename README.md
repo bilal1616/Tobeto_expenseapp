@@ -1,22 +1,13 @@
 # expenseapp
 
-A new Flutter project.
+Flutter ile geliştirilen, kullanıcının harcamalarını kaydedebileceği ekleme ve silme işlemleri yapabileceği bir mobil uygulamadır.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Proje içeriği
+- model dosyası, harcama kategorilerini ve hesaplamalarını tutan modelleri içerir.
+- intl paketi, tarih modelini yönetmemizi sağlıyor.
+- chart bar paketi, harcama grafiklerini tutar ve harcama miktarına göre grafiği düzenler.
 
 <img src="assets/11.png" height="400">
 <img src="assets/12.png" height="400">
 <img src="assets/13.png" height="400">
 <img src="assets/14.png" height="400">
-<img src="assets/15.png" height="400">
