@@ -1,10 +1,10 @@
 # expenseapp
 
-Flutter ile geliştirilen, kullanıcının harcamalarını kaydedebileceği ekleme ve silme işlemleri yapabileceği bir mobil uygulamadır.
+Flutter ile geliştirilen, kullanıcının harcamalarını kontrol edebileceği ekleme ve silme işlemleri yapabileceği bir mobil uygulamadır.
 
 ## Proje içeriği
 - model dosyası, harcama kategorilerini ve hesaplamalarını tutan modelleri içerir.
-- intl paketi, tarih modelini yönetmemizi sağlıyor.
+- intl paketi, tarih modelini yönetmemizi sağlar.
 - chart bar paketi, harcama grafiklerini tutar ve harcama miktarına göre grafiği düzenler.
 
 </br></br>
